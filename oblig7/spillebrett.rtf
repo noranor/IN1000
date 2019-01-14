@@ -1,0 +1,131 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 # Fil 2 av 3\
+# ---------------- Obligatorisk innlevering nr. 7 -----------------------\
+\
+# Besvarelsen er strukturert ved at oppgavenummer (evt. deloppgavenummer) er skrevet lengst til venstre, og da er det koden under den som tilh\'f8rer deloppgaven.\
+# Kommentar til den enkelte kode er rett under koden.\
+\
+from random import randint\
+from celle import Celle\
+\
+class Spillebrett:\
+\
+# Oppgave 1\
+    def __init__(self, rader, kolonner):\
+        self._rader = rader\
+        self._kolonner = kolonner\
+\
+# Oppgave 1 a)\
+        self._rutenett = []\
+        for x in range(self._rader):\
+            self._rutenett.append([])\
+            for y in range(self._kolonner):\
+                self._rutenett[x].append(Celle())\
+        # F\'f8rst er rutenettet en tom liste. Deretter legges til en ny tom liste for hver rad. Dette gj\'f8r at vi f\'e5r kolonner. S\'e5 legges det til celle-objekter for hver plass i rutenettet som eksisterer.\
+\
+# Oppgave 1 b)\
+        self._generasjon = 0\
+\
+# Oppgave 2\
+        self.generer()\
+\
+    def generer(self):\
+        for x in range(self._rader):\
+            for y in range(self._kolonner):\
+                rand = randint(0,3)\
+                if rand == 3:\
+                    self._rutenett[x][y].settLevende()\
+        # Gj\'f8r at brettet genererer tilfeldig om celle er levende eller d\'f8d.\
+\
+# Oppgave 3\
+    def tegnBrett(self): # Fungerer\
+        for x in range(self._rader):\
+            for y in range(self._kolonner):\
+\
+# Oppgave 3 a)\
+                print(self._rutenett[x][y].tegn(),end=" ")\
+            print()\
+\
+# Oppgave 3 b) - t\'f8mming av terminalvinduet - finner man i main.py. Merker dette med "# ***" i main.py.\
+\
+# Oppgave 4\
+    def finnNabo(self, rad, kolonne):\
+        naboliste = []\
+        for x in range(-1, 2):\
+            for y in range(-1, 2):\
+                naboRad = rad + x\
+                naboKolonne = kolonne + y\
+                if (naboRad == rad and naboKolonne == kolonne) != True:\
+                    if (naboRad < 0 or naboKolonne < 0 or naboRad > self._rader - 1 or naboKolonne > self._kolonner - 1) != True:\
+                        naboliste.append(self._rutenett[naboRad][naboKolonne])\
+        return naboliste\
+\
+# Oppgave 5\
+    def oppdatering(self):\
+        self._generasjon = 0\
+\
+# Oppgave 5 a)\
+        celler_som_maa_do = []\
+        celler_som_maa_leve = []\
+        # celler_som_maa_do skal endre cellens status til "d\'f8d" og celler_som_maa_leve skal endre cellens status til "levende".\
+\
+# Oppgave 5 b)\
+        rad = 0\
+        kolonne = 0\
+\
+        for section in self._rutenett:\
+            for cell in section:\
+                naboliste = self.finnNabo(rad, kolonne)\
+        # G\'e5r igjennom for hver del av rutenettet, finner celler og deres tilh\'f8rende naber. Setter dette s\'e5 i en naboliste. Har samme navn her som i metoden finnNabo() for simpelhetens skyld.\
+\
+                antall_levende = 0\
+                for nabo in naboliste:\
+                    if nabo.erLevende() == True:\
+                        antall_levende = antall_levende + 1\
+                # Oppretter f\'f8rst en variabel. G\'e5r igjennom en celles naboer og sjekker om de er levende. For hver levende nabocelle som finnes, s\'e5 vil variabelen oppdateres  med + 1.\
+\
+# ------------> Spillets regler er lagt til som kommentar til hver del av koden;\
+\
+                if cell.erLevende() == True: # "Dersom cellens n\'e5v\'e6rende status er 'levende':"\
+                    if antall_levende > 3 or antall_levende < 2: # "Ved f\'e6rre en to levende naboceller..." / " Hvis cellen har mer enn tre levende naboceller... "\
+                        celler_som_maa_do.append(cell) # "... d\'f8r cellen" / "... vil den d\'f8."\
+\
+                    elif antall_levende == 3 or antall_levende == 2: # "Ved to eller tre levende naboceller ..."\
+                        celler_som_maa_leve.append(cell) # "... vil cellen leve videre."\
+\
+                elif cell.erLevende() == False: # "Dersom cellen er 'd\'f8d':"\
+                    if antall_levende == 3:\
+                        celler_som_maa_leve.append(cell)\
+                    # "Cellens status blir 'levende' dersom den har n\'f8yaktig tre levende naboer"\
+\
+                kolonne = kolonne + 1\
+            rad = rad + 1\
+            # For \'e5 g\'e5 videre til neste kolonne og s\'e5 videre til neste rad, m\'e5 f\'f8rt kolonnene oppdateres med + 1. N\'e5r Den har v\'e6rt igjennom alle kolonnene, s\'e5 g\'e5r den igjennom alle radene og oppdaterer variabelen med + 1.\
+            kolonne = 0\
+            # Nullstiller "kolonne" f\'f8r den g\'e5r videre i programmet.\
+\
+# Oppgave 5 c)\
+        for objekt in celler_som_maa_do:\
+            objekt.settDoed()\
+        for objekt in celler_som_maa_leve:\
+            objekt.settLevende()\
+        # Endrer statusen p\'e5 de cellene som er plassert i de forskjellige listene.\
+\
+# Oppgave 5 d)\
+        self._generasjon =  self._generasjon + 1\
+        # Oppdaterer generasjonen for hver iterasjon.\
+\
+# Oppgave 6\
+    def finnAntallLevende(self):\
+        totalt_levende = 0\
+        for x in range(self._rader):\
+            for y in range(self._kolonner):\
+                if self._rutenett[x][y].erLevende() == True:\
+                        totalt_levende = totalt_levende + 1\
+        return totalt_levende\
+        # Oppretter f\'f8rst en variabel. Deretter g\'e5r man igjennom rutenettet, og for hver levende celle man finner, s\'e5 legger man til + 1 p\'e5 variabelen.}

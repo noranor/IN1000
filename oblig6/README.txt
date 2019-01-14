@@ -1,0 +1,3 @@
+a. Innleveringen var grei, men er litt vanskelig å forstå seg på klasser.
+b. Tipper jeg sammenlagt brukte rundt 9-10 timer på innleveringen.
+Oppgave jeg ikke fikk til: Tror ikke hund.py og testHund.py fungerer slik de burde gjøre. Jeg tror problemet kan ligge i at metodene ikke er helt avhengige av hverandre(?) og at det å bare legge til et vilkårlig heltall på self._metthet blir litt rart. Ville nok spurt seminarleder om help dersom jeg hadde hatt mer tid.
